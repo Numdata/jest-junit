@@ -33,7 +33,12 @@ const processor = (report, reporterOptions = {}, jestRootDir = null) => {
   mkdirp.sync(path.dirname(finalOutput));
 
   // Write data to file
-  fs.writeFileSync(finalOutput, xml(jsonResults, { indent: '  ', declaration: true }));
+  for ( let i = 1; i < jsonResults.testsuites.length; i++ )
+  {
+    let testSuite = jsonResults.testsuites[ i ];
+    const actualOutput = path.join( path.dirname( finalOutput ), `TEST-${testSuite.testsuite[ 0 ]._attr.name}.xml` );
+    fs.writeFileSync( actualOutput, xml( testSuite, { indent: '  ', declaration: true } ) );
+  }
 
   // Jest 18 compatibility
   return report;

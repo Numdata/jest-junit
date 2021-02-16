@@ -186,10 +186,13 @@ module.exports = function (report, appDirectory, options) {
       // Write out all failure messages as <failure> tags
       // Nested underneath <testcase> tag
       if (tc.status === 'failed'|| tc.status === 'error') {
-        tc.failureMessages.forEach((failure) => {
+        tc.failureDetails.forEach((failure) => {
           const tagName = tc.status === 'failed' ? 'failure': 'error'
           testCase.testcase.push({
-            [tagName]: stripAnsi(failure)
+            [tagName]: [
+              {_attr: { message: failure.message } },
+              stripAnsi(failure.stack)
+            ]
           });
         })
       }
